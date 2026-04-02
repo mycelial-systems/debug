@@ -96,8 +96,8 @@
     "miniflare": "^4.20250829.0",
     "tap-spec": "^5.0.0",
     "typedoc": "^0.28.1",
-    "typescript": "^5.4.5",
-    "vite": "^7.0.1"
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3"
   },
   "author": "nichoth <nichoth@gmail.com> (https://nichoth.com)",
   "license": "SEE LICENSE IN LICENSE",
