@@ -12,10 +12,9 @@ export function coerce (val:unknown):string {
     return String(val)
 }
 
-const assignedColors = new Set<number>()
-
 /**
- * Selects a color for a debug namespace, avoiding colors already in use.
+ * Selects a color for a debug namespace. Same namespace always returns
+ * the same color; distinct namespaces may collide.
  * @param {string} namespace The namespace string for the debug instance to be colored
  * @return {number|string} An ANSI color code for the given namespace
  */
@@ -30,27 +29,7 @@ export function selectColor (
         hash |= 0  // Convert to 32bit integer
     }
 
-    let index = Math.abs(hash) % colors.length
-
-    // If this color is already assigned, find the next available one
-    if (assignedColors.has(index)) {
-        let found = false
-        for (let i = 1; i < colors.length; i++) {
-            const candidate = (index + i) % colors.length
-            if (!assignedColors.has(candidate)) {
-                index = candidate
-                found = true
-                break
-            }
-        }
-        // If all colors are taken, reset and start fresh
-        if (!found) {
-            assignedColors.clear()
-        }
-    }
-
-    assignedColors.add(index)
-    return colors[index]
+    return colors[Math.abs(hash) % colors.length]
 }
 
 export function createRegexFromEnvVar (names:string):RegExp[] {

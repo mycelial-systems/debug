@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { dirname, join, resolve } from 'node:path'
 import { writeFileSync, unlinkSync } from 'node:fs'
+import { selectColor } from '../src/index.js'
 import './test-extend.js'
 import './test-noop.js'
 
@@ -11,6 +12,16 @@ const __dirname = dirname(__filename)
 
 // path to built node.js file
 const nodeJsPath = resolve(process.cwd(), 'dist/node/index.js')
+
+test('selectColor is deterministic for the same namespace', t => {
+    const palette = ['a', 'b', 'c', 'd']
+    const first = selectColor('template:db', palette)
+    selectColor('something-else', palette)
+    selectColor('another:ns', palette)
+    const second = selectColor('template:db', palette)
+    t.equal(first, second,
+        'same namespace should always produce the same color')
+})
 
 test('Logs to stderr when namespace matches DEBUG env var', async t => {
     const code = `
