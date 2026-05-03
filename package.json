@@ -89,15 +89,15 @@
     "@typescript-eslint/parser": "^8.0.0",
     "auto-changelog": "^2.4.0",
     "dotenv": "^17.2.1",
-    "esbuild": "^0.27.0",
+    "esbuild": "^0.28.0",
     "eslint-config-standard": "^17.1.0",
     "http-server": "^14.1.1",
     "markdown-toc": "^1.2.0",
     "miniflare": "^4.20250829.0",
     "tap-spec": "^5.0.0",
     "typedoc": "^0.28.1",
-    "typescript": "^5.4.5",
-    "vite": "^7.0.1"
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10"
   },
   "author": "nichoth <nichoth@gmail.com> (https://nichoth.com)",
   "license": "SEE LICENSE IN LICENSE",
