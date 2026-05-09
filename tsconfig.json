@@ -5,7 +5,6 @@
     "types": ["vite/client", "node"],
     "target": "ES2022",
     "moduleResolution": "Bundler",
-    "esModuleInterop": false,
     "lib": ["ES2022", "DOM", "WebWorker"],
     "allowJs": false,
     "skipLibCheck": true,
