@@ -7,6 +7,7 @@ import { selectColor } from '../src/index.js'
 import './test-extend.js'
 import './test-noop.js'
 import './test-error.js'
+import './test-cloudflare-error.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
