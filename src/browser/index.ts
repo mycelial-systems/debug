@@ -7,7 +7,7 @@ import {
     type Debugger
 } from '../index.js'
 import { noop } from '../noop.js'
-import { colors } from './util.js'
+import { colors, ERROR_COLOR } from './util.js'
 
 const log = console.log || (() => {})
 
@@ -205,9 +205,19 @@ function createDebug (namespace:string|boolean):Debugger {
         )
     }
 
-    debug.extend = function (extension: string): Debugger {
+    debug.extend = function (extension:string):Debugger {
         const extendedNamespace = actualNamespace + ':' + extension
         return createDebug(extendedNamespace)
+    }
+
+    debug.error = function (...args:any[]) {
+        return logger(
+            'ERROR',
+            args,
+            // need to always use a red color
+            { prevTime, color: ERROR_COLOR },
+            forcedEnabled
+        )
     }
 
     return debug as Debugger
