@@ -194,5 +194,5 @@ function createDebug (
         return createDebug(extendedNamespace, envObj)
     }
 
-    return debug
+    return debug as Debugger
 }
