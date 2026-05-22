@@ -42,8 +42,9 @@ export function createRegexFromEnvVar (names:string):RegExp[] {
 }
 
 export type Debugger = {
-    (...args: any[]): void;
-    extend: (namespace: string) => Debugger;
+    (...args:any[]):void;
+    extend:(namespace:string) => Debugger;
+    error:(...args:any[]) => void;
 }
 
 /**

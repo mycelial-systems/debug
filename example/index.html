@@ -3,10 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Example</title>
+    <link rel="stylesheet" href="/style.css">
+    <title>Debug Example</title>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">
+      <h1>Debug</h1>
+
+      <p>
+        By default just the <code>fooo</code> namespace is turned on
+        in localStorage. You can set other namespaces by assigning to
+        localStorage:
+        
+        <pre><code>
+          localStorage.setItem('DEBUG', 'abc:*')
+        </code></pre>
+      </p>
+
+      <p>
+        <code>window</code> has a property <code>debug</code>, with keys
+        <code>fooo</code> and <code>barrr</code> for the fooo and barrr
+        namespaced debugs.
+      </p>
+
+      <p>
+        You can set the localStrage <code>DEBUG</code> key to a different
+        value and then try logging with each debug instance.
+      </p>
+    </div>
     <script type="module" src="./index.ts"></script>
   </body>
 </html>

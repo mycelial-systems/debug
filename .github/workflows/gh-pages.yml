@@ -1,3 +1,4 @@
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
 name: GitHub Pages deploy
 
 on:
@@ -32,11 +33,11 @@ jobs:
       - name: Install
         run: npm install
       - name: Build
-        run: npm run build-docs
+        run: npm run build-example
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: docs/
+          path: public/
 
   # Deployment job
   deploy:

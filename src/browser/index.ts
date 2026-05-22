@@ -7,7 +7,7 @@ import {
     type Debugger
 } from '../index.js'
 import { noop } from '../noop.js'
-import { colors } from './util.js'
+import { colors, ERROR_COLOR } from './util.js'
 
 const log = console.log || (() => {})
 
@@ -64,11 +64,9 @@ function createFormatters () {
 function logger (
     namespace:string,
     args:any[],
-    { prevTime, color },
-    forcedEnabled?:boolean
+    { prevTime, color }
 ) {
     args = args || []
-    if (!isEnabled(namespace, forcedEnabled)) return
 
     // Set `diff` timestamp
     const curr = Number(new Date())
@@ -146,7 +144,7 @@ function shouldUseColors ():boolean {
  */
 function formatArgs ({ diff, color, namespace, useColors }:{
     diff:number,
-    color:number,
+    color:number|string,
     namespace:string,
     useColors:boolean
 }, args) {
@@ -197,17 +195,26 @@ function createDebug (namespace:string|boolean):Debugger {
     const actualNamespace = typeof namespace === 'string' ? namespace : 'DEV'
 
     const debug = function (...args:any[]) {
+        if (!isEnabled(actualNamespace, forcedEnabled)) return
         return logger(
             actualNamespace,
             args,
-            { prevTime, color },
-            forcedEnabled
+            { prevTime, color }
         )
     }
 
-    debug.extend = function (extension: string): Debugger {
+    debug.extend = function (extension:string):Debugger {
         const extendedNamespace = actualNamespace + ':' + extension
         return createDebug(extendedNamespace)
+    }
+
+    debug.error = function (...args:any[]) {
+        if (!isEnabled(actualNamespace, forcedEnabled)) return
+        return logger(
+            'ERROR',
+            args,
+            { prevTime, color: ERROR_COLOR }
+        )
     }
 
     return debug as Debugger

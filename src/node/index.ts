@@ -38,6 +38,8 @@ const colors:number[] = (supportsColor &&
     ]) :
     ([1, 2, 3, 4, 5, 6])
 
+export const ERROR_COLOR:number = 196
+
 /**
  * Is stdout a TTY? Colored output is enabled when `true`.
  */
@@ -115,6 +117,16 @@ export function createDebug (
     debug.extend = function (extension:string):Debugger {
         const extendedNamespace = _namespace + ':' + extension
         return createDebug(extendedNamespace, env)
+    }
+
+    debug.error = function (...args:any[]) {
+        if (isEnabled(namespace, env)) {
+            return logger(
+                'ERROR',
+                args,
+                { prevTime, color: ERROR_COLOR }
+            )
+        }
     }
 
     return debug as Debugger

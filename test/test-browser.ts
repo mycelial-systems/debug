@@ -1,5 +1,6 @@
 import { test } from '@substrate-system/tapzero'
 import createDebug from '../src/browser/index.js'
+import { ERROR_COLOR } from '../src/browser/util.js'
 
 // Mock localStorage for testing
 const mockLocalStorage = (() => {
@@ -167,4 +168,27 @@ test('Browser debug forced enabled and disabled', t => {
     } catch (err) {
         t.fail(`Forced and disabled debug calls should not throw: ${err}`)
     }
+})
+
+test('Browser ERROR_COLOR is the expected red hex', t => {
+    t.equal(ERROR_COLOR, '#940000',
+        'ERROR_COLOR should be #940000')
+})
+
+test('Browser debug.error is a function', t => {
+    const debug = createDebug('test')
+    t.ok(typeof debug.error === 'function',
+        'debug.error should be a function')
+})
+
+test('Browser debug.error does not throw', t => {
+    mockLocalStorage.setItem('DEBUG', '*')
+    const debug = createDebug('test')
+    try {
+        debug.error('an error message')
+        t.ok(true, 'debug.error should not throw')
+    } catch (err) {
+        t.fail(`debug.error should not throw: ${err}`)
+    }
+    mockLocalStorage.clear()
 })

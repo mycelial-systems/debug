@@ -14,3 +14,5 @@ export const colors = [
     '#873600',  // brown
     '#bc007d',  // magenta
 ]
+
+export const ERROR_COLOR = '#940000'

@@ -23,6 +23,8 @@ const colors = [
     '#cc0088', '#778800', '#774422', '#007777', '#555555',
 ]
 
+export const ERROR_COLOR = 196
+
 export { createDebug }
 export default createDebug
 
@@ -77,11 +79,13 @@ function createFormatters () {
 function logger (
     namespace:string,
     args:any[],
-    { prevTime, color },
-    env?:Record<string, string>
+    { prevTime, color, isError = false }:{
+        prevTime:number,
+        color:number|string,
+        isError?:boolean
+    }
 ) {
     args = args || []
-    if (!isEnabled(namespace, env)) return
 
     // Set `diff` timestamp
     const curr = Number(new Date())
@@ -118,34 +122,36 @@ function logger (
         return match
     })
 
-    // Apply Cloudflare-specific formatting (no colors in Workers typically)
     const _args = formatArgs({
         diff,
         color,
-        useColors: shouldUseColors(),
-        namespace
+        namespace,
+        isError
     }, args)
 
     log(..._args)
 }
 
-function shouldUseColors ():boolean {
-    // Cloudflare Workers typically don't support colors in console output
-    // But we can detect if we're in a development environment
-    return false
-}
-
 /**
- * Format log arguments for Cloudflare Workers (no color support typically).
+ * Format log arguments for Cloudflare Workers.
+ * Emits red ANSI for error calls; plain text otherwise.
  * Mutates the given args.
  */
-function formatArgs ({ diff, namespace }:{
+function formatArgs ({ diff, color, namespace, isError }:{
     diff:number,
-    color:number,
+    color:number|string,
     namespace:string,
-    useColors:boolean
+    isError:boolean,
 }, args:string[]) {
-    args[0] = namespace + ' ' + args[0] + ' +' + humanize(diff, {})
+    if (isError && typeof color === 'number') {
+        const c = color
+        const colorCode = '\x1b[3' + (c < 8 ? c : '8;5;' + c)
+        args[0] = `${colorCode};1m${namespace}\x1b[0m ` +
+            args[0] +
+            ' +' + humanize(diff, {})
+    } else {
+        args[0] = namespace + ' ' + args[0] + ' +' + humanize(diff, {})
+    }
     return args
 }
 
@@ -181,11 +187,11 @@ function createDebug (
     }
 
     const debug = function (...args:any[]) {
+        if (!isEnabled(actualNamespace, envObj)) return
         return logger(
             actualNamespace,
             args,
-            { prevTime, color },
-            envObj
+            { prevTime, color }
         )
     }
 
@@ -194,5 +200,14 @@ function createDebug (
         return createDebug(extendedNamespace, envObj)
     }
 
-    return debug
+    debug.error = function (...args:any[]) {
+        if (!isEnabled(actualNamespace, envObj)) return
+        return logger(
+            'ERROR',
+            args,
+            { prevTime, color: ERROR_COLOR, isError: true }
+        )
+    }
+
+    return debug as Debugger
 }
