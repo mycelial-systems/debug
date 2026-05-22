@@ -26,6 +26,16 @@ test('noop debugger has extend method', async t => {
         'noop debugger should have extend method')
 })
 
+test('noop debugger has error method', async t => {
+    const debug = createDebugNoop('test')
+
+    t.ok(typeof debug.error === 'function',
+        'noop debugger should have error method')
+
+    debug.error('should not throw')
+    t.ok(true, 'noop.error should be callable without throwing')
+})
+
 test('noop debugger extend returns another debugger', async t => {
     const debug = createDebugNoop('test')
     const extended = debug.extend('child')

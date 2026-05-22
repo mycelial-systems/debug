@@ -121,7 +121,6 @@ export function createDebug (
 
     debug.error = function (...args:any[]) {
         if (isEnabled(namespace, env)) {
-            if (!namespace) return
             return logger(
                 'ERROR',
                 args,

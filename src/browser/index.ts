@@ -144,7 +144,7 @@ function shouldUseColors ():boolean {
  */
 function formatArgs ({ diff, color, namespace, useColors }:{
     diff:number,
-    color:number,
+    color:number|string,
     namespace:string,
     useColors:boolean
 }, args) {
