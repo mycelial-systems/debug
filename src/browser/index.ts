@@ -64,11 +64,9 @@ function createFormatters () {
 function logger (
     namespace:string,
     args:any[],
-    { prevTime, color },
-    forcedEnabled?:boolean
+    { prevTime, color }
 ) {
     args = args || []
-    if (!isEnabled(namespace, forcedEnabled)) return
 
     // Set `diff` timestamp
     const curr = Number(new Date())
@@ -197,11 +195,11 @@ function createDebug (namespace:string|boolean):Debugger {
     const actualNamespace = typeof namespace === 'string' ? namespace : 'DEV'
 
     const debug = function (...args:any[]) {
+        if (!isEnabled(actualNamespace, forcedEnabled)) return
         return logger(
             actualNamespace,
             args,
-            { prevTime, color },
-            forcedEnabled
+            { prevTime, color }
         )
     }
 
@@ -211,12 +209,11 @@ function createDebug (namespace:string|boolean):Debugger {
     }
 
     debug.error = function (...args:any[]) {
+        if (!isEnabled(actualNamespace, forcedEnabled)) return
         return logger(
             'ERROR',
             args,
-            // need to always use a red color
-            { prevTime, color: ERROR_COLOR },
-            forcedEnabled
+            { prevTime, color: ERROR_COLOR }
         )
     }
 
