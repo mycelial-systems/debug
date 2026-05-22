@@ -1,4 +1,4 @@
-import createDebugCF from '../src/cloudflare/index.js'
+import createDebugCF, { ERROR_COLOR } from '../src/cloudflare/index.js'
 
 /**
  * Test for Cloudflare Workers environment.
@@ -187,6 +187,29 @@ function runCloudflareTests () {
     globalDebug('global debug message')
     const globalOutput = t.getConsoleOutput()
     t.ok(globalOutput.length > 0, 'Should support global DEBUG variable')
+
+    // Test: ERROR_COLOR constant
+    t.ok(ERROR_COLOR === 196,
+        'Cloudflare ERROR_COLOR should be ANSI 196')
+
+    // Test: debug.error is a function
+    const errorDebug = createDebugCF('worker:test')
+    t.ok(typeof errorDebug.error === 'function',
+        'Cloudflare debug.error should be a function')
+
+    // Test: debug.error does not throw when enabled
+    t.clearConsoleOutput()
+    ;(globalThis as any).process = (globalThis as any).process ||
+        { env: {} }
+    ;(globalThis as any).process.env.DEBUG = '*'
+    const enabledErrorDebug = createDebugCF('worker:enabled')
+    try {
+        enabledErrorDebug.error('error message in workers')
+        t.ok(true, 'Cloudflare debug.error should not throw')
+    } catch (err) {
+        t.fail(`Cloudflare debug.error should not throw: ${err}`)
+    }
+    delete (globalThis as any).process.env.DEBUG
 
     t.end()
 }
