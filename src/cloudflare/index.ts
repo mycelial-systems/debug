@@ -145,8 +145,8 @@ function formatArgs ({ diff, color, namespace, isError }:{
 }, args:string[]) {
     if (isError && typeof color === 'number') {
         const c = color
-        const colorCode = '[3' + (c < 8 ? c : '8;5;' + c)
-        args[0] = `${colorCode};1m${namespace}[0m ` +
+        const colorCode = '\x1b[3' + (c < 8 ? c : '8;5;' + c)
+        args[0] = `${colorCode};1m${namespace}\x1b[0m ` +
             args[0] +
             ' +' + humanize(diff, {})
     } else {
