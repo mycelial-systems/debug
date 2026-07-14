@@ -10,47 +10,58 @@
   "exports": {
     ".": {
       "node": {
+        "types": "./dist/node/index.d.ts",
         "import": "./dist/node/index.js",
         "require": "./dist/node/index.cjs"
       },
       "worker": {
+        "types": "./dist/cloudflare/index.d.ts",
         "import": "./dist/cloudflare/index.js",
         "require": "./dist/cloudflare/index.cjs"
       },
       "browser": {
+        "types": "./dist/browser/index.d.ts",
         "import": "./dist/browser/index.js",
         "require": "./dist/browser/index.cjs"
       },
       "default": {
+        "types": "./dist/browser/index.d.ts",
         "import": "./dist/browser/index.js",
         "require": "./dist/browser/index.cjs"
       }
     },
     "./index": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./node": {
+      "types": "./dist/node/index.d.ts",
       "import": "./dist/node/index.js",
       "require": "./dist/node/index.cjs"
     },
     "./browser": {
+      "types": "./dist/browser/index.d.ts",
       "import": "./dist/browser/index.js",
       "require": "./dist/browser/index.cjs"
     },
     "./cloudflare": {
+      "types": "./dist/cloudflare/index.d.ts",
       "import": "./dist/cloudflare/index.js",
       "require": "./dist/cloudflare/index.cjs"
     },
     "./min/*": {
+      "types": "./dist/*/index.d.ts",
       "import": "./dist/*/index.min.js",
       "require": "./dist/*/index.min.cjs"
     },
     "./noop": {
+      "types": "./dist/noop.d.ts",
       "import": "./dist/noop.js",
       "require": "./dist/noop.cjs"
     },
     "./*": {
+      "types": "./dist/*/index.d.ts",
       "import": "./dist/*/index.js",
       "require": "./dist/*/index.cjs"
     }
