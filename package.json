@@ -90,16 +90,16 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "supports-color": "^10.0.0"
+    "supports-color": "^11.0.0"
   },
   "devDependencies": {
-    "@substrate-system/tapout": "^0.0.40",
+    "@substrate-system/tapout": "^0.0.42",
     "@substrate-system/tapzero": "^0.10.15",
     "@types/node": "^26.1.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "auto-changelog": "^2.4.0",
-    "dotenv": "^17.2.1",
+    "dotenv": "^18.0.4",
     "esbuild": "^0.28.0",
     "eslint-config-standard": "^17.1.0",
     "http-server": "^14.1.1",
@@ -107,7 +107,7 @@
     "miniflare": "^4.20250829.0",
     "tap-spec": "^5.0.0",
     "typedoc": "^0.28.1",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vite": "^8.0.10"
   },
   "author": "nichoth <nichoth@gmail.com> (https://nichoth.com)",
