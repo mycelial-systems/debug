@@ -42,7 +42,7 @@ cloudflare tests stay as they are.
 script under `test/`, `package.json` (a new `test:package` script,
 appended to `test`)
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] `npm run test:package` installs the packed tarball into a
   temporary directory with no `ms` installed and bundles a consumer for
