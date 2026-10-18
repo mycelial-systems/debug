@@ -1,4 +1,4 @@
-import humanize from 'ms'
+import humanize from '../ms.js'
 import {
     generateRandomString,
     coerce,
