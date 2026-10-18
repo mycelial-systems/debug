@@ -44,16 +44,16 @@ appended to `test`)
 
 **Status:** ready-for-agent
 
-- [ ] `npm run test:package` installs the packed tarball into a
+- [x] `npm run test:package` installs the packed tarball into a
   temporary directory with no `ms` installed and bundles a consumer for
   each condition and subpath listed above
-- [ ] Before the import fix, `npm run test:package` fails, and the
+- [x] Before the import fix, `npm run test:package` fails, and the
   failure names an unresolved `ms` from a browser entry
-- [ ] After the import fix, every bundle in `npm run test:package`
+- [x] After the import fix, every bundle in `npm run test:package`
   succeeds
-- [ ] The bundled node consumer runs from the temporary install and
+- [x] The bundled node consumer runs from the temporary install and
   logs through the debug factory without error
-- [ ] `npm test` runs `test:package`, and `npm test` and `npm run lint`
+- [x] `npm test` runs `test:package`, and `npm test` and `npm run lint`
   both pass
-- [ ] The built browser output (ESM, CJS and their minified forms)
+- [x] The built browser output (ESM, CJS and their minified forms)
   contains no bare import other than declared dependencies
