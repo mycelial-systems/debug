@@ -25,3 +25,9 @@ Single-context layout. See `docs/agents/domain.md`.
   the external `ms` package, which is not a dependency.
 - The `index.min.*` builds use `--bundle`, so they inline whatever the
   build machine resolves; the unbundled builds keep bare imports.
+- `test/test-package.mjs` checks every entry point twice, as an ESM
+  `import` and a CJS `require`, since the export map's `import` and
+  `require` conditions point to different files. New entry points need
+  both.
+- The unbundled `.cjs` builds `require("../ms.js")`, which is the ESM
+  file; this only works on a Node with `require(esm)` (22+).

@@ -21,12 +21,15 @@ const factoryCall = `createDebug('${NS}')('hello')`
 const factoryConsumer = spec => {
     return `import createDebug from '${spec}'\n${factoryCall}\n`
 }
+const factoryRequirer = spec => {
+    return `const { createDebug } = require('${spec}')\n${factoryCall}\n`
+}
 
 /**
  * name, import specifier, esbuild platform, extra conditions,
- * consumer source, and whether to run the bundle with node.
+ * and whether to run the bundle with node.
  */
-const CASES = [
+const ENTRIES = [
     ['. (browser)', PKG, 'browser', []],
     ['. (node)', PKG, 'node', [], true],
     ['. (worker)', PKG, 'neutral', ['worker']],
@@ -38,23 +41,65 @@ const CASES = [
     ['./min/browser', `${PKG}/min/browser`, 'browser', []],
     ['./min/node', `${PKG}/min/node`, 'node', [], true],
     ['./min/cloudflare', `${PKG}/min/cloudflare`, 'neutral', []],
-].map(([name, spec, platform, conditions, run]) => ({
-    name,
-    platform,
-    conditions,
-    run: !!run,
-    contents: factoryConsumer(spec)
-}))
+]
+
+/**
+ * Each entry is bundled twice: as ESM, which resolves the `import`
+ * condition, and as CJS, which resolves the `require` condition.
+ */
+const CASES = ENTRIES.flatMap(([name, spec, platform, conditions, run]) => [
+    {
+        name: `${name} (import)`,
+        format: 'esm',
+        platform,
+        conditions,
+        run: !!run,
+        contents: factoryConsumer(spec)
+    },
+    {
+        name: `${name} (require)`,
+        format: 'cjs',
+        platform,
+        conditions,
+        run: !!run,
+        contents: factoryRequirer(spec)
+    }
+])
 
 // `./index` has no default factory; call one of its exported functions
 CASES.push({
-    name: './index',
+    name: './index (import)',
+    format: 'esm',
     platform: 'neutral',
     conditions: [],
     run: false,
     contents: `import { generateRandomString } from '${PKG}/index'\n` +
         'generateRandomString()\n'
+}, {
+    name: './index (require)',
+    format: 'cjs',
+    platform: 'neutral',
+    conditions: [],
+    run: false,
+    contents: `const { generateRandomString } = require('${PKG}/index')\n` +
+        'generateRandomString()\n'
 })
+
+/**
+ * Run a script with node and check that the debug factory logged.
+ */
+function assertLogs (file, cwd) {
+    const result = spawnSync('node', [file], {
+        cwd,
+        encoding: 'utf8',
+        env: { ...process.env, DEBUG: NS }
+    })
+    assert.strictEqual(result.status, 0, result.stderr)
+    assert.ok(
+        result.stderr.includes(NS),
+        'the debug factory should log the namespace'
+    )
+}
 
 describe('packed package', () => {
     let dir
@@ -99,7 +144,8 @@ describe('packed package', () => {
 
     for (const c of CASES) {
         test(`bundles ${c.name}`, async () => {
-            const outfile = join(dir, `out-${CASES.indexOf(c)}.mjs`)
+            const ext = c.format === 'cjs' ? 'cjs' : 'mjs'
+            const outfile = join(dir, `out-${CASES.indexOf(c)}.${ext}`)
             await esbuild.build({
                 stdin: {
                     contents: c.contents,
@@ -108,7 +154,7 @@ describe('packed package', () => {
                 },
                 absWorkingDir: dir,
                 bundle: true,
-                format: 'esm',
+                format: c.format,
                 platform: c.platform,
                 conditions: c.conditions,
                 outfile,
@@ -116,17 +162,14 @@ describe('packed package', () => {
             })
 
             if (!c.run) return
+            assertLogs(outfile, dir)
 
-            const result = spawnSync('node', [outfile], {
-                cwd: dir,
-                encoding: 'utf8',
-                env: { ...process.env, DEBUG: NS }
-            })
-            assert.strictEqual(result.status, 0, result.stderr)
-            assert.ok(
-                result.stderr.includes(NS),
-                'the debug factory should log the namespace'
-            )
+            if (c.format !== 'cjs') return
+            // also load the installed CJS files with node's own `require`,
+            // without a bundler in between
+            const consumer = join(dir, `consumer-${CASES.indexOf(c)}.cjs`)
+            writeFileSync(consumer, c.contents)
+            assertLogs(consumer, dir)
         })
     }
 })
