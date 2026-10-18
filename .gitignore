@@ -8,3 +8,4 @@ docs
 example/static/bundle.js
 .claude
 .playwright-mcp
+.agents
